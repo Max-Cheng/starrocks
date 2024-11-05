@@ -31,9 +31,26 @@
 
 #else
 
+#if defined(__ARM_NEON) && defined(__aarch64__)
+#include <arm_neon.h>
+#include "arm_acle.h"
+
+#define MFV_IMPL(IMPL, ATTR)                                                               \
+    _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wunused-function\"") \
+            ATTR static inline IMPL _Pragma("GCC diagnostic pop")
+
 #define MFV_SSE42(IMPL)
 #define MFV_AVX2(IMPL)
 #define MFV_AVX512(IMPL)
+#define MFV_NEON(IMPL) MFV_IMPL(IMPL, __attribute__((target("neon"))))
+#define MFV_DEFAULT(IMPL) MFV_IMPL(IMPL, __attribute__((target("default"))))
+
+#else
+
+#define MFV_SSE42(IMPL)
+#define MFV_AVX2(IMPL)
+#define MFV_AVX512(IMPL)
+#define MFV_NEON(IMPL)
 #define MFV_DEFAULT(IMPL) IMPL
 
 #endif

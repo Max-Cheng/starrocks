@@ -212,6 +212,19 @@ MFV_DEFAULT(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
     }
 })
 
+MFV_NEON(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
+    constexpr int SIMD_SIZE = sizeof(uint8x16_t);
+    constexpr int loop = HLL_REGISTERS_COUNT / SIMD_SIZE;
+    assert(HLL_REGISTERS_COUNT % SIMD_SIZE == 0);
+
+    for (int i = 0; i < loop; i++, other += SIMD_SIZE, dest += SIMD_SIZE) {
+        uint8x16_t va = vld1q_u8((const uint8_t*)dest);
+        uint8x16_t vb = vld1q_u8((const uint8_t*)other);
+        uint8x16_t vmax = vmaxq_u8(va, vb);
+        vst1q_u8((uint8_t*)dest, vmax);
+    }
+})
+
 void HyperLogLog::merge(const HyperLogLog& other) {
     // fast path
     if (other._type == HLL_DATA_EMPTY) {
