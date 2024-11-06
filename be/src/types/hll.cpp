@@ -206,12 +206,6 @@ MFV_SSE42(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
     }
 })
 
-MFV_DEFAULT(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
-    for (int i = 0; i < HLL_REGISTERS_COUNT; i++) {
-        dest[i] = std::max(dest[i], other[i]);
-    }
-})
-
 MFV_NEON(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
     constexpr int SIMD_SIZE = sizeof(uint8x16_t);
     constexpr int loop = HLL_REGISTERS_COUNT / SIMD_SIZE;
@@ -222,6 +216,12 @@ MFV_NEON(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
         uint8x16_t vb = vld1q_u8((const uint8_t*)other);
         uint8x16_t vmax = vmaxq_u8(va, vb);
         vst1q_u8((uint8_t*)dest, vmax);
+    }
+})
+
+MFV_DEFAULT(void merge_registers_impl(uint8_t* dest, const uint8_t* other) {
+    for (int i = 0; i < HLL_REGISTERS_COUNT; i++) {
+        dest[i] = std::max(dest[i], other[i]);
     }
 })
 

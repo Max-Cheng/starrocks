@@ -29,9 +29,7 @@
 #define MFV_AVX512(IMPL) MFV_IMPL(IMPL, __attribute__((target("avx512f,avx512bw"))))
 #define MFV_DEFAULT(IMPL) MFV_IMPL(IMPL, __attribute__((target("default"))))
 
-#else
-
-#if defined(__ARM_NEON) && defined(__aarch64__)
+#elif defined(__ARM_NEON) && defined(__aarch64__)
 #include <arm_neon.h>
 #include "arm_acle.h"
 
@@ -43,7 +41,7 @@
 #define MFV_AVX2(IMPL)
 #define MFV_AVX512(IMPL)
 #define MFV_NEON(IMPL) MFV_IMPL(IMPL, __attribute__((target("neon"))))
-#define MFV_DEFAULT(IMPL) MFV_IMPL(IMPL, __attribute__((target("default"))))
+#define MFV_DEFAULT(IMPL)
 
 #else
 
