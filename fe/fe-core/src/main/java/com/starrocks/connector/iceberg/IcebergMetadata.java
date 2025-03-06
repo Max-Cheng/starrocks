@@ -80,6 +80,7 @@ import com.starrocks.sql.optimizer.operator.scalar.ConstantOperator;
 import com.starrocks.sql.optimizer.operator.scalar.ScalarOperator;
 import com.starrocks.sql.optimizer.statistics.Statistics;
 import com.starrocks.statistic.StatisticUtils;
+import com.starrocks.thrift.TGetWarehousesRequest;
 import com.starrocks.thrift.TIcebergDataFile;
 import com.starrocks.thrift.TSinkCommitInfo;
 import org.apache.iceberg.AppendFiles;
@@ -281,6 +282,7 @@ public class IcebergMetadata implements ConnectorMetadata {
             properties.put(COMMENT, comment);
         }
         Map<String, String> createTableProperties = IcebergApiConverter.rebuildCreateTableProperties(properties);
+        // TODO: create table location verify
 
         return icebergCatalog.createTable(dbName, tableName, schema, partitionSpec, tableLocation, createTableProperties);
     }
